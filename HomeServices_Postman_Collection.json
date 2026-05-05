@@ -1,0 +1,391 @@
+{
+  "info": {
+    "name": "Home Services Marketplace - DS Assignment 2",
+    "description": "Complete Postman collection for all microservices endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "USER_SERVICE",    "value": "http://localhost:8081" },
+    { "key": "OFFER_SERVICE",   "value": "http://localhost:8082" },
+    { "key": "BOOKING_SERVICE", "value": "http://localhost:8083" },
+    { "key": "NOTIF_SERVICE",   "value": "http://localhost:8084" },
+    { "key": "REQUEST_SERVICE", "value": "http://localhost:8085" },
+    { "key": "customerId",      "value": "1" },
+    { "key": "providerId",      "value": "2" },
+    { "key": "offerId",         "value": "1" },
+    { "key": "bookingId",       "value": "1" },
+    { "key": "requestId",       "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "1. User Service",
+      "item": [
+        {
+          "name": "Register Customer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{USER_SERVICE}}/api/customers/register", "host": ["{{USER_SERVICE}}"], "path": ["api","customers","register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"alice\",\n  \"password\": \"password123\",\n  \"email\": \"alice@example.com\",\n  \"initialBalance\": 200.00\n}"
+            }
+          }
+        },
+        {
+          "name": "Register Service Provider",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{USER_SERVICE}}/api/providers/register", "host": ["{{USER_SERVICE}}"], "path": ["api","providers","register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"bob_plumber\",\n  \"password\": \"password123\",\n  \"email\": \"bob@example.com\",\n  \"professionType\": \"Plumber\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{USER_SERVICE}}/api/auth/login", "host": ["{{USER_SERVICE}}"], "path": ["api","auth","login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"alice\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Add Funds to Wallet",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{USER_SERVICE}}/api/customers/{{customerId}}/wallet/add", "host": ["{{USER_SERVICE}}"], "path": ["api","customers","{{customerId}}","wallet","add"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100.00\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Wallet Balance",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{USER_SERVICE}}/api/customers/{{customerId}}/wallet", "host": ["{{USER_SERVICE}}"], "path": ["api","customers","{{customerId}}","wallet"] }
+          }
+        },
+        {
+          "name": "Get All Service Categories",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{USER_SERVICE}}/api/categories", "host": ["{{USER_SERVICE}}"], "path": ["api","categories"] }
+          }
+        },
+        {
+          "name": "Admin - Add Service Category",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{USER_SERVICE}}/api/admin/categories", "host": ["{{USER_SERVICE}}"], "path": ["api","admin","categories"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"Pool Maintenance\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Admin - View All Users",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{USER_SERVICE}}/api/admin/users", "host": ["{{USER_SERVICE}}"], "path": ["api","admin","users"] }
+          }
+        },
+        {
+          "name": "Admin - System Info (EJB Singleton stats)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{USER_SERVICE}}/api/admin/system-info", "host": ["{{USER_SERVICE}}"], "path": ["api","admin","system-info"] }
+          }
+        },
+        {
+          "name": "Internal - Get User By ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{USER_SERVICE}}/api/internal/users/{{customerId}}", "host": ["{{USER_SERVICE}}"], "path": ["api","internal","users","{{customerId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Service Offer Service",
+      "item": [
+        {
+          "name": "Create Service Offer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{OFFER_SERVICE}}/api/offers", "host": ["{{OFFER_SERVICE}}"], "path": ["api","offers"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"providerId\": {{providerId}},\n  \"category\": \"Plumbing\",\n  \"description\": \"Professional pipe repair and installation\",\n  \"price\": 80.00,\n  \"availableDate\": \"2026-06-15\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Service Offer",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{OFFER_SERVICE}}/api/offers/{{offerId}}/provider/{{providerId}}", "host": ["{{OFFER_SERVICE}}"], "path": ["api","offers","{{offerId}}","provider","{{providerId}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 90.00,\n  \"availableDate\": \"2026-06-20\",\n  \"description\": \"Updated: Professional pipe repair, available on new date\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Active Offers",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{OFFER_SERVICE}}/api/offers", "host": ["{{OFFER_SERVICE}}"], "path": ["api","offers"] }
+          }
+        },
+        {
+          "name": "Browse Offers by Category",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{OFFER_SERVICE}}/api/offers/category/Plumbing", "host": ["{{OFFER_SERVICE}}"], "path": ["api","offers","category","Plumbing"] }
+          }
+        },
+        {
+          "name": "Search Offers (category + date + maxPrice)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{OFFER_SERVICE}}/api/offers/search?category=Plumbing&date=2026-06-15&maxPrice=100",
+              "host": ["{{OFFER_SERVICE}}"],
+              "path": ["api","offers","search"],
+              "query": [
+                { "key": "category", "value": "Plumbing" },
+                { "key": "date",     "value": "2026-06-15" },
+                { "key": "maxPrice", "value": "100" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Provider - View All My Offers",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{OFFER_SERVICE}}/api/offers/provider/{{providerId}}", "host": ["{{OFFER_SERVICE}}"], "path": ["api","offers","provider","{{providerId}}"] }
+          }
+        },
+        {
+          "name": "Provider - View Completed Services",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{OFFER_SERVICE}}/api/offers/provider/{{providerId}}/completed", "host": ["{{OFFER_SERVICE}}"], "path": ["api","offers","provider","{{providerId}}","completed"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Booking Service",
+      "item": [
+        {
+          "name": "Create Booking (triggers RabbitMQ saga)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{BOOKING_SERVICE}}/api/bookings", "host": ["{{BOOKING_SERVICE}}"], "path": ["api","bookings"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": {{customerId}},\n  \"offerId\": {{offerId}}\n}"
+            }
+          }
+        },
+        {
+          "name": "Customer - View My Booking History",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{BOOKING_SERVICE}}/api/bookings/customer/{{customerId}}", "host": ["{{BOOKING_SERVICE}}"], "path": ["api","bookings","customer","{{customerId}}"] }
+          }
+        },
+        {
+          "name": "Provider - View My Bookings",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{BOOKING_SERVICE}}/api/bookings/provider/{{providerId}}", "host": ["{{BOOKING_SERVICE}}"], "path": ["api","bookings","provider","{{providerId}}"] }
+          }
+        },
+        {
+          "name": "Admin - View All Bookings (transaction history)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{BOOKING_SERVICE}}/api/admin/bookings", "host": ["{{BOOKING_SERVICE}}"], "path": ["api","admin","bookings"] }
+          }
+        },
+        {
+          "name": "Get Booking By ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{BOOKING_SERVICE}}/api/bookings/{{bookingId}}", "host": ["{{BOOKING_SERVICE}}"], "path": ["api","bookings","{{bookingId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Notification Service",
+      "item": [
+        {
+          "name": "Get User Notifications",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{NOTIF_SERVICE}}/api/notifications/user/{{customerId}}", "host": ["{{NOTIF_SERVICE}}"], "path": ["api","notifications","user","{{customerId}}"] }
+          }
+        },
+        {
+          "name": "Get Unread Notifications",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{NOTIF_SERVICE}}/api/notifications/user/{{customerId}}/unread", "host": ["{{NOTIF_SERVICE}}"], "path": ["api","notifications","user","{{customerId}}","unread"] }
+          }
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "PATCH",
+            "url": { "raw": "{{NOTIF_SERVICE}}/api/notifications/1/read", "host": ["{{NOTIF_SERVICE}}"], "path": ["api","notifications","1","read"] }
+          }
+        },
+        {
+          "name": "Admin - View All Notifications",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{NOTIF_SERVICE}}/api/admin/notifications", "host": ["{{NOTIF_SERVICE}}"], "path": ["api","admin","notifications"] }
+          }
+        },
+        {
+          "name": "Admin - View PaymentFailed Notifications (Direct Exchange)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{NOTIF_SERVICE}}/api/admin/notifications/payment-failed", "host": ["{{NOTIF_SERVICE}}"], "path": ["api","admin","notifications","payment-failed"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Request Matching Service (Team of 3)",
+      "item": [
+        {
+          "name": "Customer - Create Service Request",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{REQUEST_SERVICE}}/api/service-requests", "host": ["{{REQUEST_SERVICE}}"], "path": ["api","service-requests"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": {{customerId}},\n  \"category\": \"Plumbing\",\n  \"description\": \"Need a pipe fixed in my kitchen\",\n  \"maxPrice\": 100.00,\n  \"requiredDate\": \"2026-06-15\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Provider - Accept or Reject Request",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{REQUEST_SERVICE}}/api/service-requests/{{requestId}}/respond", "host": ["{{REQUEST_SERVICE}}"], "path": ["api","service-requests","{{requestId}}","respond"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"providerId\": {{providerId}},\n  \"response\": \"ACCEPTED\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Customer - View My Service Requests",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{REQUEST_SERVICE}}/api/service-requests/customer/{{customerId}}", "host": ["{{REQUEST_SERVICE}}"], "path": ["api","service-requests","customer","{{customerId}}"] }
+          }
+        },
+        {
+          "name": "View All Open Requests",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{REQUEST_SERVICE}}/api/service-requests/open", "host": ["{{REQUEST_SERVICE}}"], "path": ["api","service-requests","open"] }
+          }
+        },
+        {
+          "name": "Get Service Request By ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{REQUEST_SERVICE}}/api/service-requests/{{requestId}}", "host": ["{{REQUEST_SERVICE}}"], "path": ["api","service-requests","{{requestId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔁 Full Happy Path Scenario",
+      "item": [
+        {
+          "name": "Step 1 - Register Customer (alice, $200)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{USER_SERVICE}}/api/customers/register" },
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"alice\",\n  \"password\": \"pass1234\",\n  \"email\": \"alice@test.com\",\n  \"initialBalance\": 200.00\n}" }
+          }
+        },
+        {
+          "name": "Step 2 - Register Plumber (bob)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{USER_SERVICE}}/api/providers/register" },
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"bob_plumber\",\n  \"password\": \"pass1234\",\n  \"email\": \"bob@test.com\",\n  \"professionType\": \"Plumber\"\n}" }
+          }
+        },
+        {
+          "name": "Step 3 - Bob Creates Plumbing Offer ($80)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{OFFER_SERVICE}}/api/offers" },
+            "body": { "mode": "raw", "raw": "{\n  \"providerId\": 1,\n  \"category\": \"Plumbing\",\n  \"description\": \"Pipe repair and installation\",\n  \"price\": 80.00,\n  \"availableDate\": \"2026-06-15\"\n}" }
+          }
+        },
+        {
+          "name": "Step 4 - Alice Books the Offer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{BOOKING_SERVICE}}/api/bookings" },
+            "body": { "mode": "raw", "raw": "{\n  \"customerId\": 1,\n  \"offerId\": 1\n}" }
+          }
+        },
+        {
+          "name": "Step 5 - Check Alice's Wallet (should be $120)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{USER_SERVICE}}/api/customers/1/wallet" }
+          }
+        },
+        {
+          "name": "Step 6 - Check Alice's Notifications",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{NOTIF_SERVICE}}/api/notifications/user/1" }
+          }
+        },
+        {
+          "name": "Step 7 - Check Bob's Notifications",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{NOTIF_SERVICE}}/api/notifications/user/2" }
+          }
+        }
+      ]
+    }
+  ]
+}
