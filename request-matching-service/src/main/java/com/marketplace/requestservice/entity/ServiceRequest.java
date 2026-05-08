@@ -47,7 +47,7 @@ public class ServiceRequest {
 
     private Long bookingId;
 
-    private String providerResponse; // ACCEPTED, REJECTED
+    private String providerResponse;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

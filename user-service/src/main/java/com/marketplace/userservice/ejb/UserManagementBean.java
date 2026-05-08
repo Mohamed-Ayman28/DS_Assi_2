@@ -1,20 +1,6 @@
 package com.marketplace.userservice.ejb;
 
-/**
- * EJB Type 1: STATELESS Session Bean
- *
- * In a traditional Jakarta EE environment, this would be annotated with @Stateless.
- * Since we are embedding EJB semantics within a Spring Boot microservice (as per
- * the assignment's flexibility note), we simulate the EJB lifecycle using Spring's
- * @Service stereotype with explicit documentation of the EJB contract:
- *
- *  - No conversational state is maintained between method calls
- *  - The bean is pooled and reused across requests
- *  - Each method invocation is independent and thread-safe
- *
- * Responsibility: All stateless user CRUD and wallet operations.
- */
-
+import jakarta.ejb.Stateless;
 import com.marketplace.userservice.dto.UserDto;
 import com.marketplace.userservice.entity.User;
 import com.marketplace.userservice.repository.UserRepository;
@@ -29,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 
+@Stateless
 @Component
 @RequiredArgsConstructor
 @Slf4j

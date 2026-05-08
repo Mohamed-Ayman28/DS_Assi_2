@@ -57,6 +57,6 @@ public class RequestDto {
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
     public static class ProviderResponseRequest {
         @NotNull  private Long providerId;
-        @NotBlank private String response; // "ACCEPTED" or "REJECTED"
+        @NotBlank private String response;
     }
 }

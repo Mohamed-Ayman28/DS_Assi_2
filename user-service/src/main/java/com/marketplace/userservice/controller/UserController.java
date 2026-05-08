@@ -1,7 +1,6 @@
 package com.marketplace.userservice.controller;
 
 import com.marketplace.userservice.dto.UserDto;
-import com.marketplace.userservice.ejb.SystemRegistryBean;
 import com.marketplace.userservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +17,6 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-     private final SystemRegistryBean systemRegistryBean;
     @PostMapping("/api/customers/register")
     public ResponseEntity<UserDto.AuthResponse> registerCustomer(
             @Valid @RequestBody UserDto.CustomerRegisterRequest request) {
@@ -50,7 +47,6 @@ public class UserController {
         return ResponseEntity.ok(userService.getWallet(userId));
     }
 
-    //Admin
     @GetMapping("/api/admin/users")
     public ResponseEntity<List<UserDto.UserResponse>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
@@ -86,14 +82,5 @@ public class UserController {
     @GetMapping("/api/internal/users/by-username/{username}")
     public ResponseEntity<UserDto.UserResponse> getUserByUsername(@PathVariable String username) {
         return ResponseEntity.ok(userService.getUserByUsername(username));
-    }
-
-    @PostMapping("/api/auth/logout")
-    public ResponseEntity<Map<String, Object>> logout(@RequestBody Map<String, String> body) {
-        String username = body.get("username");
-        systemRegistryBean.removeSession(username);
-        return ResponseEntity.ok(Map.of(
-                "message", "User '" + username + "' logged out successfully"
-        ));
     }
 }

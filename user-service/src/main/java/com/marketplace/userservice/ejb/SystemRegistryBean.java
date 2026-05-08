@@ -1,5 +1,7 @@
 package com.marketplace.userservice.ejb;
 
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -8,6 +10,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Singleton
+@Startup
 @Component
 @Slf4j
 public class SystemRegistryBean {
@@ -17,7 +21,6 @@ public class SystemRegistryBean {
     private final Map<String, Long> categoryUsageCount = new ConcurrentHashMap<>();
     private volatile String systemStatus = "OPERATIONAL";
     private volatile long startupTime;
-    private final Set<String> activeSessions = Collections.synchronizedSet(new HashSet<>());
 
 
     @PostConstruct
@@ -48,7 +51,7 @@ public class SystemRegistryBean {
     }
 
     public synchronized void incrementCategoryUsage(String category) {
-        categoryUsageCount.merge(category, 1L, Long::sum);
+        categoryUsageCount.merge(category, 1L, (current, increment) -> current + increment);
     }
 
     public synchronized Map<String, Long> getCategoryUsageStats() {
@@ -80,18 +83,6 @@ public class SystemRegistryBean {
         info.put("serviceCategories", getAllCategories());
         info.put("categoryUsage", getCategoryUsageStats());
         return info;
-    }
-
-    public boolean isAlreadyLoggedIn(String username) {
-        return activeSessions.contains(username);
-    }
-
-    public void addSession(String username) {
-        activeSessions.add(username);
-    }
-
-    public void removeSession(String username) {
-        activeSessions.remove(username);
     }
 
 }

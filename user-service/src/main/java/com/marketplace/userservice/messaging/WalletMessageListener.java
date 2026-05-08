@@ -1,23 +1,5 @@
 package com.marketplace.userservice.messaging;
 
-/**
- * EJB Message Driven Bean (MDB) Simulation
- *
- * In a Jakarta EE environment, this class would be annotated with:
- *   @MessageDriven(activationConfig = {
- *     @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
- *     @ActivationConfigProperty(propertyName = "destination", propertyValue = "wallet.deduct.queue")
- *   })
- *
- * Here we use Spring's @RabbitListener, which provides the same asynchronous
- * message-consumption contract as an MDB:
- *  - Listens to a queue and processes messages asynchronously
- *  - Stateless; each message is an independent invocation
- *  - Decoupled from the message producer
- *
- * This listener handles wallet deductions and refunds triggered by the booking service.
- */
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marketplace.userservice.config.RabbitMQConfig;
 import com.marketplace.userservice.dto.UserDto;

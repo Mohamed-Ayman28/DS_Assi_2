@@ -24,12 +24,6 @@
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>
-        <!-- EJB API for SRS compliance: add EJB annotations support -->
-        <dependency>
-            <groupId>jakarta.ejb</groupId>
-            <artifactId>jakarta.ejb-api</artifactId>
-            <version>4.0.0</version>
-        </dependency>
     </dependencies>
     <build>
         <plugins>

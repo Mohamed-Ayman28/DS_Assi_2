@@ -12,12 +12,9 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class AppConfig {
 
-    // Exchanges
     public static final String BOOKING_EXCHANGE = "booking.exchange";
     public static final String PAYMENTS_EXCHANGE = "payments.exchange";
     public static final String NOTIFICATION_EXCHANGE = "notification.exchange";
-
-    // Queues
     public static final String WALLET_DEDUCT_QUEUE = "wallet.deduct.queue";
     public static final String WALLET_REFUND_QUEUE = "wallet.refund.queue";
     public static final String BOOKING_CONFIRM_QUEUE = "booking.confirm.queue";
@@ -83,7 +80,6 @@ public class AppConfig {
         return QueueBuilder.durable(NOTIFICATION_PROVIDER_QUEUE).build();
     }
 
-    // Bindings for booking exchange
     @Bean
     public Binding walletDeductBinding() {
         return BindingBuilder.bind(walletDeductQueue()).to(bookingExchange()).with("wallet.deduct");
@@ -104,13 +100,11 @@ public class AppConfig {
         return BindingBuilder.bind(bookingRejectQueue()).to(bookingExchange()).with("booking.reject");
     }
 
-    // Direct exchange binding for admin PaymentFailed notifications
     @Bean
     public Binding adminPaymentFailedBinding() {
         return BindingBuilder.bind(adminPaymentFailedQueue()).to(paymentsExchange()).with(PAYMENT_FAILED_KEY);
     }
 
-    // Notification bindings
     @Bean
     public Binding notificationCustomerBinding() {
         return BindingBuilder.bind(notificationCustomerQueue()).to(notificationExchange()).with("notification.customer.#");
