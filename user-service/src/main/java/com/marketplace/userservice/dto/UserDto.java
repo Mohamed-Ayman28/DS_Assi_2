@@ -45,6 +45,7 @@ public class UserDto {
         private String username;
         private String role;
         private Long userId;
+        private String message;
     }
 
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
@@ -79,7 +80,6 @@ public class UserDto {
         private BigDecimal balance;
     }
 
-    // Internal DTO used between services
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
     public static class WalletDeductRequest {
         private Long userId;

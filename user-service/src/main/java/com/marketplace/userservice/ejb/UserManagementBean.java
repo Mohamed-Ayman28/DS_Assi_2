@@ -28,7 +28,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-// Simulated @Stateless EJB — no instance state; pooled, reused, thread-safe
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -37,7 +37,6 @@ public class UserManagementBean {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // ── Registration ──────────────────────────────────────────────────────────
 
     @Transactional
     public User registerCustomer(UserDto.CustomerRegisterRequest request) {
@@ -77,7 +76,6 @@ public class UserManagementBean {
         return saved;
     }
 
-    // ── Queries ───────────────────────────────────────────────────────────────
 
     @Transactional(readOnly = true)
     public Optional<User> findByUsername(String username) {
@@ -99,7 +97,7 @@ public class UserManagementBean {
         return userRepository.findByRole(role);
     }
 
-    // ── Wallet ────────────────────────────────────────────────────────────────
+
 
     @Transactional
     public User addFunds(Long userId, BigDecimal amount) {
@@ -136,7 +134,6 @@ public class UserManagementBean {
         log.info("[EJB-Stateless] Refunded {} to userId={}", amount, userId);
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private void validateUniqueUsername(String username) {
         if (userRepository.existsByUsername(username)) {

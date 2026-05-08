@@ -41,10 +41,6 @@ public class WalletMessageListener {
     private final RabbitTemplate rabbitTemplate;
     private final ObjectMapper objectMapper;
 
-    /**
-     * Simulated MDB: consumes wallet deduction requests from the booking service.
-     * Replies with success/failure result to the booking service reply queue.
-     */
     @Transactional
     @RabbitListener(queues = RabbitMQConfig.WALLET_DEDUCT_QUEUE)
     public void handleWalletDeduct(Map<String, Object> message) {
@@ -73,9 +69,6 @@ public class WalletMessageListener {
         }
     }
 
-    /**
-     * Simulated MDB: consumes wallet refund requests (booking rollback).
-     */
     @Transactional
     @RabbitListener(queues = RabbitMQConfig.WALLET_REFUND_QUEUE)
     public void handleWalletRefund(Map<String, Object> message) {

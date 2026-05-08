@@ -19,7 +19,6 @@ public class NotificationProcessorStateless {
 
     private final NotificationRepository notificationRepository;
 
-    // No-arg constructor for frameworks that require it
     public NotificationProcessorStateless() {
         this.notificationRepository = null;
     }

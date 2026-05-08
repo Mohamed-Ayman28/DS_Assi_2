@@ -20,7 +20,7 @@ public class UserServiceClient {
     @Value("${services.user-service-url}")
     private String userServiceUrl;
 
-    @SuppressWarnings("unchecked")
+
     public Map<String, Object> getUserById(Long userId) {
         try {
             ResponseEntity<Map<String, Object>> response = restTemplate.exchange(

@@ -48,10 +48,22 @@ public class UserService {
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Invalid credentials");
         }
+
+        if (systemRegistryBean.isAlreadyLoggedIn(request.getUsername())) {
+            throw new IllegalStateException("User '" + request.getUsername() + "' is already logged in");
+        }
+
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name(), user.getId());
+
+        systemRegistryBean.addSession(user.getUsername());
+
         return UserDto.AuthResponse.builder()
-                .token(token).username(user.getUsername())
-                .role(user.getRole().name()).userId(user.getId()).build();
+                .token(token)
+                .username(user.getUsername())
+                .role(user.getRole().name())
+                .userId(user.getId())
+                .message("Login successful")
+                .build();
     }
 
     public UserDto.WalletResponse addFunds(Long userId, BigDecimal amount) {

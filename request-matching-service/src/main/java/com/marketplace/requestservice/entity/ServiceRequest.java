@@ -41,15 +41,12 @@ public class ServiceRequest {
     @Column(nullable = false)
     private RequestStatus status;
 
-    // Set when matched to an offer
     private Long matchedOfferId;
     private Long matchedProviderId;
     private String matchedProviderName;
 
-    // Set when a booking is created from this request
     private Long bookingId;
 
-    // Provider's response
     private String providerResponse; // ACCEPTED, REJECTED
 
     @Column(nullable = false)
@@ -68,11 +65,11 @@ public class ServiceRequest {
     }
 
     public enum RequestStatus {
-        OPEN,           // Customer placed request, looking for match
-        MATCHED,        // Matched with an offer, waiting for provider acceptance
-        ACCEPTED,       // Provider accepted → booking in progress
-        BOOKED,         // Booking confirmed
-        REJECTED,       // Provider rejected or no match found
-        CANCELLED       // Customer cancelled
+        OPEN,
+        MATCHED,
+        ACCEPTED,
+        BOOKED,
+        REJECTED,
+        CANCELLED
     }
 }

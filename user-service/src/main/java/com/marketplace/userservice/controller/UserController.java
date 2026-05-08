@@ -1,6 +1,7 @@
 package com.marketplace.userservice.controller;
 
 import com.marketplace.userservice.dto.UserDto;
+import com.marketplace.userservice.ejb.SystemRegistryBean;
 import com.marketplace.userservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +19,7 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-
-    // ── Registration ──────────────────────────────────────────────────────────
-
+     private final SystemRegistryBean systemRegistryBean;
     @PostMapping("/api/customers/register")
     public ResponseEntity<UserDto.AuthResponse> registerCustomer(
             @Valid @RequestBody UserDto.CustomerRegisterRequest request) {
@@ -33,15 +32,11 @@ public class UserController {
         return ResponseEntity.ok(userService.registerProvider(request));
     }
 
-    // ── Login (shared) ────────────────────────────────────────────────────────
-
     @PostMapping("/api/auth/login")
     public ResponseEntity<UserDto.AuthResponse> login(
             @Valid @RequestBody UserDto.LoginRequest request) {
         return ResponseEntity.ok(userService.login(request));
     }
-
-    // ── Wallet ────────────────────────────────────────────────────────────────
 
     @PostMapping("/api/customers/{userId}/wallet/add")
     public ResponseEntity<UserDto.WalletResponse> addFunds(
@@ -55,8 +50,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getWallet(userId));
     }
 
-    // ── Admin ─────────────────────────────────────────────────────────────────
-
+    //Admin
     @GetMapping("/api/admin/users")
     public ResponseEntity<List<UserDto.UserResponse>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
@@ -83,7 +77,6 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllCategories());
     }
 
-    // ── Internal (called by other services) ───────────────────────────────────
 
     @GetMapping("/api/internal/users/{id}")
     public ResponseEntity<UserDto.UserResponse> getUserById(@PathVariable Long id) {
@@ -93,5 +86,14 @@ public class UserController {
     @GetMapping("/api/internal/users/by-username/{username}")
     public ResponseEntity<UserDto.UserResponse> getUserByUsername(@PathVariable String username) {
         return ResponseEntity.ok(userService.getUserByUsername(username));
+    }
+
+    @PostMapping("/api/auth/logout")
+    public ResponseEntity<Map<String, Object>> logout(@RequestBody Map<String, String> body) {
+        String username = body.get("username");
+        systemRegistryBean.removeSession(username);
+        return ResponseEntity.ok(Map.of(
+                "message", "User '" + username + "' logged out successfully"
+        ));
     }
 }

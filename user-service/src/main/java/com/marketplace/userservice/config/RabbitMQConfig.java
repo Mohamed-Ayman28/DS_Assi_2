@@ -10,16 +10,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    // ── Exchange Names ────────────────────────────────────────────────────────
+    // ── Exchange Names
     public static final String BOOKING_EXCHANGE = "booking.exchange";
     public static final String PAYMENTS_EXCHANGE = "payments.exchange";
     public static final String NOTIFICATION_EXCHANGE = "notification.exchange";
 
-    // ── Queue Names ───────────────────────────────────────────────────────────
+    // ── Queue Names
     public static final String WALLET_DEDUCT_QUEUE = "wallet.deduct.queue";
     public static final String WALLET_REFUND_QUEUE = "wallet.refund.queue";
 
-    // ── Routing Keys ──────────────────────────────────────────────────────────
+    // ── Routing Keys
     public static final String PAYMENT_FAILED_KEY = "PaymentFailed";
 
     @Bean

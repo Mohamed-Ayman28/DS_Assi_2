@@ -34,10 +34,10 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
 
-    // Only for SERVICE_PROVIDER
+
     private String professionType;
 
-    // Only for CUSTOMER
+
     @Column(precision = 10, scale = 2)
     private BigDecimal walletBalance;
 

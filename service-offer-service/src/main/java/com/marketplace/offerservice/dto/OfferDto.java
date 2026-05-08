@@ -60,7 +60,7 @@ public class OfferDto {
         }
     }
 
-    // Internal DTO for booking service
+
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
     public static class BookOfferRequest {
         private Long offerId;

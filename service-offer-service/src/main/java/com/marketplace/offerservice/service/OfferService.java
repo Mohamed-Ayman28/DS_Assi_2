@@ -24,17 +24,19 @@ public class OfferService {
     private final UserServiceClient userServiceClient;
 
     @Transactional
-    public OfferDto.OfferResponse createOffer(OfferDto.CreateOfferRequest request) {
-        // Verify provider exists
+    public Map<String, String> createOffer(OfferDto.CreateOfferRequest request) {
+
         Map<String, Object> provider = userServiceClient.getUserById(request.getProviderId());
         String role = (String) provider.get("role");
         if (!"SERVICE_PROVIDER".equals(role)) {
             throw new IllegalArgumentException("Only service providers can create offers");
         }
 
+        String providerName = (String) provider.get("username");
+
         ServiceOffer offer = ServiceOffer.builder()
                 .providerId(request.getProviderId())
-                .providerName((String) provider.get("username"))
+                .providerName(providerName)
                 .professionType((String) provider.get("professionType"))
                 .category(request.getCategory())
                 .description(request.getDescription())
@@ -43,11 +45,12 @@ public class OfferService {
                 .status(ServiceOffer.OfferStatus.ACTIVE)
                 .build();
 
-        return OfferDto.OfferResponse.fromEntity(offerRepository.save(offer));
-    }
+        offerRepository.save(offer);
 
+        return Map.of("message", "Successfully created offer by provider name: " + providerName);
+    }
     @Transactional
-    public OfferDto.OfferResponse updateOffer(Long offerId, Long providerId, OfferDto.UpdateOfferRequest request) {
+    public Map<String, String> updateOffer(Long offerId, Long providerId, OfferDto.UpdateOfferRequest request) {
         ServiceOffer offer = offerRepository.findByIdAndProviderId(offerId, providerId)
                 .orElseThrow(() -> new IllegalArgumentException("Offer not found or not owned by provider"));
 
@@ -59,7 +62,9 @@ public class OfferService {
         if (request.getAvailableDate() != null) offer.setAvailableDate(request.getAvailableDate());
         if (request.getDescription() != null) offer.setDescription(request.getDescription());
 
-        return OfferDto.OfferResponse.fromEntity(offerRepository.save(offer));
+        offerRepository.save(offer);
+
+        return Map.of("message", "Offer " + offerId + " is updated successfully by provider name: " + offer.getProviderName());
     }
 
     @Transactional(readOnly = true)
@@ -92,10 +97,8 @@ public class OfferService {
                 .map(OfferDto.OfferResponse::fromEntity).collect(Collectors.toList());
     }
 
-    // ── Internal methods called by booking service ────────────────────────────
-
     @Transactional
-    public OfferDto.OfferResponse bookOffer(Long offerId, Long customerId, String customerName) {
+    public Map<String, String> bookOffer(Long offerId, Long customerId, String customerName) {
         ServiceOffer offer = offerRepository.findById(offerId)
                 .orElseThrow(() -> new IllegalArgumentException("Offer not found: " + offerId));
         if (offer.getStatus() != ServiceOffer.OfferStatus.ACTIVE) {
@@ -104,7 +107,9 @@ public class OfferService {
         offer.setStatus(ServiceOffer.OfferStatus.BOOKED);
         offer.setBookedByCustomerId(customerId);
         offer.setBookedByCustomerName(customerName);
-        return OfferDto.OfferResponse.fromEntity(offerRepository.save(offer));
+        offerRepository.save(offer);
+
+        return Map.of("message", "Offer " + offerId + " is successfully booked by " + customerName);
     }
 
     @Transactional

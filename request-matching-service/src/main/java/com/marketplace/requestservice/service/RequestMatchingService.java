@@ -24,13 +24,8 @@ public class RequestMatchingService {
     private final ServiceClients serviceClients;
     private final RabbitTemplate rabbitTemplate;
 
-    /**
-     * Customer creates a service request.
-     * The system then searches for matching offers and notifies all relevant providers.
-     */
     @Transactional
     public RequestDto.ServiceRequestResponse createServiceRequest(RequestDto.CreateServiceRequestRequest req) {
-        // Validate customer
         Map<String, Object> customer = serviceClients.getUserById(req.getCustomerId());
         if (!"CUSTOMER".equals(customer.get("role"))) {
             throw new IllegalArgumentException("Only customers can create service requests");
@@ -49,7 +44,6 @@ public class RequestMatchingService {
         serviceRequest = requestRepository.save(serviceRequest);
         log.info("Service request #{} created by customerId={}", serviceRequest.getId(), req.getCustomerId());
 
-        // Find matching offers via REST to offer-service
         List<Map<String, Object>> matchingOffers = serviceClients.searchMatchingOffers(
                 req.getCategory(), req.getRequiredDate(), req.getMaxPrice());
 
@@ -58,7 +52,6 @@ public class RequestMatchingService {
         } else {
             log.info("Found {} matching offers for request #{}", matchingOffers.size(), serviceRequest.getId());
 
-            // Notify each matching provider via RabbitMQ
             for (Map<String, Object> offer : matchingOffers) {
                 Long providerId = Long.valueOf(offer.get("providerId").toString());
 
@@ -93,7 +86,6 @@ public class RequestMatchingService {
                 log.info("Notified provider {} of new service request #{}", providerId, serviceRequest.getId());
             }
 
-            // Auto-match with first available offer
             Map<String, Object> firstOffer = matchingOffers.get(0);
             serviceRequest.setMatchedOfferId(Long.valueOf(firstOffer.get("id").toString()));
             serviceRequest.setMatchedProviderId(Long.valueOf(firstOffer.get("providerId").toString()));
@@ -105,10 +97,7 @@ public class RequestMatchingService {
         return RequestDto.ServiceRequestResponse.fromEntity(serviceRequest);
     }
 
-    /**
-     * Provider responds to a service request (ACCEPTED or REJECTED).
-     * If ACCEPTED, a booking is created automatically.
-     */
+
     @Transactional
     public RequestDto.ServiceRequestResponse providerRespondToRequest(
             Long requestId, RequestDto.ProviderResponseRequest providerResponse) {
@@ -130,7 +119,6 @@ public class RequestMatchingService {
             request.setProviderResponse("ACCEPTED");
             request = requestRepository.save(request);
 
-            // Create booking via booking-service REST call
             try {
                 Map<String, Object> booking = serviceClients.createBooking(
                         request.getCustomerId(), request.getMatchedOfferId());
@@ -154,7 +142,6 @@ public class RequestMatchingService {
                 log.error("Failed to create booking for request #{}: {}", requestId, e.getMessage());
             }
 
-            // Notify customer of the outcome
             String outcomeMsg = ServiceRequest.RequestStatus.BOOKED == request.getStatus()
                     ? "Your service request #" + requestId + " has been accepted by "
                         + request.getMatchedProviderName() + " and a booking is confirmed!"
@@ -166,7 +153,6 @@ public class RequestMatchingService {
                     outcomeMsg, requestId);
 
         } else {
-            // Provider rejected
             request.setStatus(ServiceRequest.RequestStatus.REJECTED);
             request.setProviderResponse("REJECTED");
             request = requestRepository.save(request);

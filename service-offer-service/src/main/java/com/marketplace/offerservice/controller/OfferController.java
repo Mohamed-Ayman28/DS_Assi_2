@@ -19,23 +19,19 @@ public class OfferController {
     @Autowired
     private OfferService offerService;
 
-    // ── Provider: Create / Update ─────────────────────────────────────────────
-
     @PostMapping("/api/offers")
-    public ResponseEntity<OfferDto.OfferResponse> createOffer(
+    public ResponseEntity<Map<String, String>> createOffer(
             @Valid @RequestBody OfferDto.CreateOfferRequest request) {
         return ResponseEntity.ok(offerService.createOffer(request));
     }
 
     @PutMapping("/api/offers/{offerId}/provider/{providerId}")
-    public ResponseEntity<OfferDto.OfferResponse> updateOffer(
+    public ResponseEntity<Map<String, String>> updateOffer(
             @PathVariable Long offerId,
             @PathVariable Long providerId,
             @RequestBody OfferDto.UpdateOfferRequest request) {
         return ResponseEntity.ok(offerService.updateOffer(offerId, providerId, request));
     }
-
-    // ── Provider: View ────────────────────────────────────────────────────────
 
     @GetMapping("/api/offers/provider/{providerId}")
     public ResponseEntity<List<OfferDto.OfferResponse>> getProviderOffers(
@@ -48,8 +44,6 @@ public class OfferController {
             @PathVariable Long providerId) {
         return ResponseEntity.ok(offerService.getProviderCompletedOffers(providerId));
     }
-
-    // ── Customer / Public: Browse ─────────────────────────────────────────────
 
     @GetMapping("/api/offers")
     public ResponseEntity<List<OfferDto.OfferResponse>> getActiveOffers() {
@@ -70,10 +64,8 @@ public class OfferController {
         return ResponseEntity.ok(offerService.findMatchingOffers(category, date, maxPrice));
     }
 
-    // ── Internal (used by booking-service) ───────────────────────────────────
-
     @PostMapping("/api/internal/offers/{offerId}/book")
-    public ResponseEntity<OfferDto.OfferResponse> bookOffer(
+    public ResponseEntity<Map<String, String>> bookOffer(
             @PathVariable Long offerId,
             @RequestBody Map<String, Object> body) {
         Long customerId = Long.valueOf(body.get("customerId").toString());
