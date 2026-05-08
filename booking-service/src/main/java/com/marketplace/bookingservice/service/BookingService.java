@@ -31,10 +31,11 @@ public class BookingService {
     private final AmqpAdmin amqpAdmin;
 
     @Transactional
-    public BookingDto.BookingResponse createBooking(BookingDto.CreateBookingRequest request) {
+    @SuppressWarnings("null")
+    public BookingDto.BookingResponse createBooking(BookingDto.CreateBookingRequest request, String authorization) {
         log.info("Processing booking: customerId={}, offerId={}", request.getCustomerId(), request.getOfferId());
 
-        Map<String, Object> customer = userServiceClient.getUserById(request.getCustomerId());
+        Map<String, Object> customer = userServiceClient.getUserById(request.getCustomerId(), authorization);
         if (!"CUSTOMER".equals(customer.get("role"))) {
             throw new IllegalArgumentException("Only customers can make bookings");
         }
@@ -186,6 +187,7 @@ public class BookingService {
     }
 
     @Transactional(readOnly = true)
+    @SuppressWarnings("null")
     public BookingDto.BookingResponse getBookingById(Long id) {
         return bookingRepository.findById(id)
                 .map(BookingDto.BookingResponse::fromEntity)

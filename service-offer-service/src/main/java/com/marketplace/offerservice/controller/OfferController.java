@@ -21,8 +21,9 @@ public class OfferController {
 
     @PostMapping("/api/offers")
     public ResponseEntity<Map<String, String>> createOffer(
+            @RequestHeader(value = "Authorization", required = false) String authorization,
             @Valid @RequestBody OfferDto.CreateOfferRequest request) {
-        return ResponseEntity.ok(offerService.createOffer(request));
+        return ResponseEntity.ok(offerService.createOffer(request, authorization));
     }
 
     @PutMapping("/api/offers/{offerId}/provider/{providerId}")

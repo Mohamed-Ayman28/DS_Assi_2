@@ -24,9 +24,9 @@ public class OfferService {
     private final UserServiceClient userServiceClient;
 
     @Transactional
-    public Map<String, String> createOffer(OfferDto.CreateOfferRequest request) {
+    public Map<String, String> createOffer(OfferDto.CreateOfferRequest request, String authorization) {
 
-        Map<String, Object> provider = userServiceClient.getUserById(request.getProviderId());
+        Map<String, Object> provider = userServiceClient.getUserById(request.getProviderId(), authorization);
         String role = (String) provider.get("role");
         if (!"SERVICE_PROVIDER".equals(role)) {
             throw new IllegalArgumentException("Only service providers can create offers");

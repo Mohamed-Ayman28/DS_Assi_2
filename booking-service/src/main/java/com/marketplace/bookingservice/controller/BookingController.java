@@ -17,8 +17,9 @@ public class BookingController {
 
     @PostMapping("/api/bookings")
     public ResponseEntity<BookingDto.BookingResponse> createBooking(
+            @RequestHeader(value = "Authorization", required = false) String authorization,
             @Valid @RequestBody BookingDto.CreateBookingRequest request) {
-        return ResponseEntity.ok(bookingService.createBooking(request));
+        return ResponseEntity.ok(bookingService.createBooking(request, authorization));
     }
 
     @GetMapping("/api/bookings/customer/{customerId}")

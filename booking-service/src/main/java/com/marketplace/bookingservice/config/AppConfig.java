@@ -26,7 +26,6 @@ public class AppConfig {
     public static final String NOTIFICATION_CUSTOMER_QUEUE = "notification.customer.queue";
     public static final String NOTIFICATION_PROVIDER_QUEUE = "notification.provider.queue";
 
-    // Routing keys
     public static final String PAYMENT_FAILED_KEY = "PaymentFailed";
 
     @Bean

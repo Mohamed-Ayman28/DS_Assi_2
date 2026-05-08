@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
+import java.net.URI;
 
 @Component
 @RequiredArgsConstructor
@@ -20,12 +21,18 @@ public class UserServiceClient {
     @Value("${services.user-service-url}")
     private String userServiceUrl;
 
-    @SuppressWarnings("unchecked")
-    public Map<String, Object> getUserById(Long userId) {
+    @SuppressWarnings("null")
+    public Map<String, Object> getUserById(Long userId, String authorization) {
         try {
+            HttpHeaders headers = new HttpHeaders();
+            if (authorization != null && !authorization.isBlank()) {
+                headers.set(HttpHeaders.AUTHORIZATION, authorization);
+            }
+
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
             ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
-                    userServiceUrl + "/api/internal/users/" + userId,
-                    HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+                    URI.create(userServiceUrl + "/api/internal/users/" + userId),
+                    HttpMethod.GET, entity, new ParameterizedTypeReference<>() {});
             return response.getBody();
         } catch (Exception e) {
             log.error("Failed to fetch user {}: {}", userId, e.getMessage());
