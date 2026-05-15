@@ -24,7 +24,7 @@ spring:
 
 app:
   jwt:
-    secret: marketplace-secret-key-for-jwt-signing-must-be-long-enough-256bits
+    secret: DoGn0Ua9d6XmIKMzwqTgMpRgRHESfMUzj5CZZo8jfJt
     expiration: 86400000 # 24 hours
 
 logging:

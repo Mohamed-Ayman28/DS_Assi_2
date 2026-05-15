@@ -17,15 +17,17 @@ public class RequestController {
 
     @PostMapping("/api/service-requests")
     public ResponseEntity<RequestDto.ServiceRequestResponse> createRequest(
+            @RequestHeader(value = "Authorization", required = false) String authorization,
             @Valid @RequestBody RequestDto.CreateServiceRequestRequest request) {
-        return ResponseEntity.ok(requestMatchingService.createServiceRequest(request));
+        return ResponseEntity.ok(requestMatchingService.createServiceRequest(request, authorization));
     }
 
     @PostMapping("/api/service-requests/{requestId}/respond")
     public ResponseEntity<RequestDto.ServiceRequestResponse> providerRespond(
             @PathVariable Long requestId,
+            @RequestHeader(value = "Authorization", required = true) String authorization,
             @Valid @RequestBody RequestDto.ProviderResponseRequest response) {
-        return ResponseEntity.ok(requestMatchingService.providerRespondToRequest(requestId, response));
+        return ResponseEntity.ok(requestMatchingService.providerRespondToRequest(requestId, response, authorization));
     }
 
     @GetMapping("/api/service-requests/customer/{customerId}")

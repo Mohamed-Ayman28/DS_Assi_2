@@ -25,8 +25,9 @@ public class RequestMatchingService {
     private final RabbitTemplate rabbitTemplate;
 
     @Transactional
-    public RequestDto.ServiceRequestResponse createServiceRequest(RequestDto.CreateServiceRequestRequest req) {
-        Map<String, Object> customer = serviceClients.getUserById(req.getCustomerId());
+    @SuppressWarnings("null")
+    public RequestDto.ServiceRequestResponse createServiceRequest(RequestDto.CreateServiceRequestRequest req, String authorization) {
+        Map<String, Object> customer = serviceClients.getUserById(req.getCustomerId(), authorization);
         if (!"CUSTOMER".equals(customer.get("role"))) {
             throw new IllegalArgumentException("Only customers can create service requests");
         }
@@ -99,8 +100,12 @@ public class RequestMatchingService {
 
 
     @Transactional
+    @SuppressWarnings("null")
     public RequestDto.ServiceRequestResponse providerRespondToRequest(
-            Long requestId, RequestDto.ProviderResponseRequest providerResponse) {
+            Long requestId, RequestDto.ProviderResponseRequest providerResponse, String authorization) {
+        if (authorization == null || authorization.isBlank()) {
+            throw new IllegalArgumentException("Authorization header is required to accept or reject a service request");
+        }
 
         ServiceRequest request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new IllegalArgumentException("Service request not found: " + requestId));
@@ -121,7 +126,7 @@ public class RequestMatchingService {
 
             try {
                 Map<String, Object> booking = serviceClients.createBooking(
-                        request.getCustomerId(), request.getMatchedOfferId());
+                        request.getCustomerId(), request.getMatchedOfferId(), authorization);
 
                 String bookingStatus = (String) booking.get("status");
                 Long bookingId = Long.valueOf(booking.get("id").toString());
@@ -180,6 +185,7 @@ public class RequestMatchingService {
     }
 
     @Transactional(readOnly = true)
+    @SuppressWarnings("null")
     public RequestDto.ServiceRequestResponse getRequestById(Long id) {
         return requestRepository.findById(id)
                 .map(RequestDto.ServiceRequestResponse::fromEntity)
